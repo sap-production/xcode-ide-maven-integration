@@ -1,0 +1,325 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8320A31E162EC5C9000167EB /* InitializeWindowController.m */; };
+		8320A321162EC5C9000167EB /* InitializeWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8320A31F162EC5C9000167EB /* InitializeWindowController.xib */; };
+		8321A6BA1624618900758EE2 /* SAPXcodeMavenPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */; };
+		83346ABB1631A8FB00778122 /* RunInitializeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 83346ABA1631A8FB00778122 /* RunInitializeOperation.m */; };
+		833DFCF5162459D800BE1634 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833DFCF4162459D800BE1634 /* Cocoa.framework */; };
+		833DFCFF162459D900BE1634 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 833DFCFD162459D900BE1634 /* InfoPlist.strings */; };
+		83A5E78E1635585800E87D28 /* XcodeConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A5E78D1635585800E87D28 /* XcodeConsole.m */; };
+		83AED2E2162ED0B1007412BD /* InitializeConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AED2E1162ED0B1007412BD /* InitializeConfiguration.m */; };
+		83C91F6A162DA200001AE99D /* MyMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 83C91F69162DA200001AE99D /* MyMenuItem.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8320A31D162EC5C9000167EB /* InitializeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitializeWindowController.h; sourceTree = "<group>"; };
+		8320A31E162EC5C9000167EB /* InitializeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitializeWindowController.m; sourceTree = "<group>"; };
+		8320A31F162EC5C9000167EB /* InitializeWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InitializeWindowController.xib; sourceTree = "<group>"; };
+		8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAPXcodeMavenPlugin.m; sourceTree = "<group>"; };
+		83346AB91631A8FB00778122 /* RunInitializeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RunInitializeOperation.h; sourceTree = "<group>"; };
+		83346ABA1631A8FB00778122 /* RunInitializeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RunInitializeOperation.m; sourceTree = "<group>"; };
+		833DFCF1162459D800BE1634 /* XcodeIDEMavenPlugin.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XcodeIDEMavenPlugin.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		833DFCF4162459D800BE1634 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		833DFCF7162459D800BE1634 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		833DFCF8162459D800BE1634 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		833DFCF9162459D800BE1634 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		833DFCFC162459D900BE1634 /* XcodeIDEMavenPlugin-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XcodeIDEMavenPlugin-Info.plist"; sourceTree = "<group>"; };
+		833DFCFE162459D900BE1634 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		833DFD00162459D900BE1634 /* XcodeIDEMavenPlugin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XcodeIDEMavenPlugin-Prefix.pch"; sourceTree = "<group>"; };
+		836ECBF2162569F60024D0CD /* SAPXcodeMavenPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPXcodeMavenPlugin.h; sourceTree = "<group>"; };
+		83A5E78C1635585800E87D28 /* XcodeConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XcodeConsole.h; sourceTree = "<group>"; };
+		83A5E78D1635585800E87D28 /* XcodeConsole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XcodeConsole.m; sourceTree = "<group>"; };
+		83AED2E0162ED0B1007412BD /* InitializeConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitializeConfiguration.h; sourceTree = "<group>"; };
+		83AED2E1162ED0B1007412BD /* InitializeConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitializeConfiguration.m; sourceTree = "<group>"; };
+		83C91F68162DA200001AE99D /* MyMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMenuItem.h; sourceTree = "<group>"; };
+		83C91F69162DA200001AE99D /* MyMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMenuItem.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		833DFCEE162459D800BE1634 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				833DFCF5162459D800BE1634 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		833DFCE6162459D800BE1634 = {
+			isa = PBXGroup;
+			children = (
+				833DFCFA162459D800BE1634 /* XcodeIDEMavenPlugin */,
+				833DFCF3162459D800BE1634 /* Frameworks */,
+				833DFCF2162459D800BE1634 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		833DFCF2162459D800BE1634 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				833DFCF1162459D800BE1634 /* XcodeIDEMavenPlugin.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		833DFCF3162459D800BE1634 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				833DFCF4162459D800BE1634 /* Cocoa.framework */,
+				833DFCF6162459D800BE1634 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		833DFCF6162459D800BE1634 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				833DFCF7162459D800BE1634 /* AppKit.framework */,
+				833DFCF8162459D800BE1634 /* CoreData.framework */,
+				833DFCF9162459D800BE1634 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		833DFCFA162459D800BE1634 /* XcodeIDEMavenPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				836ECBF2162569F60024D0CD /* SAPXcodeMavenPlugin.h */,
+				8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */,
+				83C91F68162DA200001AE99D /* MyMenuItem.h */,
+				83C91F69162DA200001AE99D /* MyMenuItem.m */,
+				8320A31D162EC5C9000167EB /* InitializeWindowController.h */,
+				8320A31E162EC5C9000167EB /* InitializeWindowController.m */,
+				8320A31F162EC5C9000167EB /* InitializeWindowController.xib */,
+				83AED2E0162ED0B1007412BD /* InitializeConfiguration.h */,
+				83AED2E1162ED0B1007412BD /* InitializeConfiguration.m */,
+				83346AB91631A8FB00778122 /* RunInitializeOperation.h */,
+				83346ABA1631A8FB00778122 /* RunInitializeOperation.m */,
+				83A5E78C1635585800E87D28 /* XcodeConsole.h */,
+				83A5E78D1635585800E87D28 /* XcodeConsole.m */,
+				833DFCFB162459D900BE1634 /* Supporting Files */,
+			);
+			path = XcodeIDEMavenPlugin;
+			sourceTree = "<group>";
+		};
+		833DFCFB162459D900BE1634 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				833DFCFC162459D900BE1634 /* XcodeIDEMavenPlugin-Info.plist */,
+				833DFCFD162459D900BE1634 /* InfoPlist.strings */,
+				833DFD00162459D900BE1634 /* XcodeIDEMavenPlugin-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		833DFCF0162459D800BE1634 /* XcodeIDEMavenPlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 833DFD03162459D900BE1634 /* Build configuration list for PBXNativeTarget "XcodeIDEMavenPlugin" */;
+			buildPhases = (
+				833DFCED162459D800BE1634 /* Sources */,
+				833DFCEE162459D800BE1634 /* Frameworks */,
+				833DFCEF162459D800BE1634 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XcodeIDEMavenPlugin;
+			productName = XcodeIDEMavenPlugin;
+			productReference = 833DFCF1162459D800BE1634 /* XcodeIDEMavenPlugin.xcplugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		833DFCE8162459D800BE1634 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "SAP AG";
+			};
+			buildConfigurationList = 833DFCEB162459D800BE1634 /* Build configuration list for PBXProject "XcodeIDEMavenPlugin" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 833DFCE6162459D800BE1634;
+			productRefGroup = 833DFCF2162459D800BE1634 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				833DFCF0162459D800BE1634 /* XcodeIDEMavenPlugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		833DFCEF162459D800BE1634 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				833DFCFF162459D900BE1634 /* InfoPlist.strings in Resources */,
+				8320A321162EC5C9000167EB /* InitializeWindowController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		833DFCED162459D800BE1634 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8321A6BA1624618900758EE2 /* SAPXcodeMavenPlugin.m in Sources */,
+				83C91F6A162DA200001AE99D /* MyMenuItem.m in Sources */,
+				8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */,
+				83AED2E2162ED0B1007412BD /* InitializeConfiguration.m in Sources */,
+				83346ABB1631A8FB00778122 /* RunInitializeOperation.m in Sources */,
+				83A5E78E1635585800E87D28 /* XcodeConsole.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		833DFCFD162459D900BE1634 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				833DFCFE162459D900BE1634 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		833DFD01162459D900BE1634 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		833DFD02162459D900BE1634 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		833DFD04162459D900BE1634 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DSTROOT = "$(HOME)";
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "XcodeIDEMavenPlugin/XcodeIDEMavenPlugin-Prefix.pch";
+				INFOPLIST_FILE = "XcodeIDEMavenPlugin/XcodeIDEMavenPlugin-Info.plist";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				LD_RUNPATH_SEARCH_PATHS = /Developer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Debug;
+		};
+		833DFD05162459D900BE1634 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DSTROOT = "$(HOME)";
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "XcodeIDEMavenPlugin/XcodeIDEMavenPlugin-Prefix.pch";
+				INFOPLIST_FILE = "XcodeIDEMavenPlugin/XcodeIDEMavenPlugin-Info.plist";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				LD_RUNPATH_SEARCH_PATHS = /Developer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		833DFCEB162459D800BE1634 /* Build configuration list for PBXProject "XcodeIDEMavenPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				833DFD01162459D900BE1634 /* Debug */,
+				833DFD02162459D900BE1634 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		833DFD03162459D900BE1634 /* Build configuration list for PBXNativeTarget "XcodeIDEMavenPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				833DFD04162459D900BE1634 /* Debug */,
+				833DFD05162459D900BE1634 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 833DFCE8162459D800BE1634 /* Project object */;
+}
