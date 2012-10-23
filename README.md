@@ -2,8 +2,9 @@
 
 ## Overview
 
-This plugin shows how to integrate into Xcode, run a command line utility, get information about the current workspace and scheme. It is still experimental, but works fine with Xcode 4.5.
-It can also serve as a good starting point for your own plugins.
+This Plugin integrates the [Xcode Maven Plugin](https://github.com/sap-production/xcode-maven-plugin) into Xcode. It allows to call `mvn initialize` directly from the Xcode main menu (`Project`->`Xcode Maven Plugin`) and the output is redirected to the console (`View`->`Debug Area`->`Activate Console`). Press and hold the `alt` key to get advanced `Xcode Maven Plugin` menu options.
+
+Additionally, this project can serve as a good starting point for writing your own Xcode plugins.
 
 ## Installation
 
