@@ -75,33 +75,37 @@ static SAPXcodeMavenPlugin *plugin;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     @try {
         if ([object isKindOfClass:NSApplication.class] && [keyPath isEqualToString:@"mainWindow"] && change[NSKeyValueChangeOldKey] != NSApplication.sharedApplication.mainWindow && NSApplication.sharedApplication.mainWindow) {
-            id newWorkspace = [self workspaceFromWindow:NSApplication.sharedApplication.mainWindow];
-            if (newWorkspace != self.activeWorkspace) {
-                if (self.activeWorkspace) {
-                    id runContextManager = [self.activeWorkspace valueForKey:@"runContextManager"];
-                    @try {
-                        [runContextManager removeObserver:self forKeyPath:@"activeRunContext"];
-                    }
-                    @catch (NSException *exception) {
-                        // do nothing
-                    }
-                }
-
-                self.activeWorkspace = newWorkspace;
-
-                if (self.activeWorkspace) {
-                    id runContextManager = [self.activeWorkspace valueForKey:@"runContextManager"];
-                    if (runContextManager) {
-                        [runContextManager addObserver:self forKeyPath:@"activeRunContext" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld context:NULL];
-                    }
-                }
-            }
+            [self updateActiveWorkspace];
         } else if ([keyPath isEqualToString:@"activeRunContext"]) {
             [self updateMainMenu];
         }
     }
     @catch (NSException *exception) {
         // TODO log
+    }
+}
+
+- (void)updateActiveWorkspace {
+    id newWorkspace = [self workspaceFromWindow:NSApplication.sharedApplication.mainWindow];
+    if (newWorkspace != self.activeWorkspace) {
+        if (self.activeWorkspace) {
+            id runContextManager = [self.activeWorkspace valueForKey:@"runContextManager"];
+            @try {
+                [runContextManager removeObserver:self forKeyPath:@"activeRunContext"];
+            }
+            @catch (NSException *exception) {
+                // do nothing
+            }
+        }
+
+        self.activeWorkspace = newWorkspace;
+
+        if (self.activeWorkspace) {
+            id runContextManager = [self.activeWorkspace valueForKey:@"runContextManager"];
+            if (runContextManager) {
+                [runContextManager addObserver:self forKeyPath:@"activeRunContext" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld context:NULL];
+            }
+        }
     }
 }
 
