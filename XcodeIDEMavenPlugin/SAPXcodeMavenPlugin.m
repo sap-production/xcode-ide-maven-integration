@@ -86,7 +86,7 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 - (void)updateActiveWorkspace {
-    id newWorkspace = [self workspaceFromWindow:NSApplication.sharedApplication.mainWindow];
+    id newWorkspace = [self workspaceFromWindow:NSApplication.sharedApplication.keyWindow];
     if (newWorkspace != self.activeWorkspace) {
         if (self.activeWorkspace) {
             id runContextManager = [self.activeWorkspace valueForKey:@"runContextManager"];
@@ -264,14 +264,26 @@ static SAPXcodeMavenPlugin *plugin;
 - (void)runInitializeForProjects:(NSArray *)xcode3Projects configuration:(InitializeConfiguration *)configuration {
     for (id xcode3Project in xcode3Projects) {
         RunInitializeOperation *operation = [[RunInitializeOperation alloc] initWithProject:xcode3Project configuration:configuration];
-        operation.xcodeConsole = [[XcodeConsole alloc] initWithConsole:[self findConsole]];
+        operation.xcodeConsole = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
         [self.initializeQueue addOperation:operation];
     }
 }
 
-- (NSTextView *)findConsole {
+- (NSTextView *)findConsoleAndActivate {
     Class consoleTextViewClass = objc_getClass("IDEConsoleTextView");
-    return (NSTextView *)[self findView:consoleTextViewClass inView:NSApplication.sharedApplication.mainWindow.contentView];
+    NSTextView *console = (NSTextView *)[self findView:consoleTextViewClass inView:NSApplication.sharedApplication.mainWindow.contentView];
+
+    if (console) {
+        NSWindow *window = NSApplication.sharedApplication.keyWindow;
+        if ([window isKindOfClass:objc_getClass("IDEWorkspaceWindow")]) {
+            if ([window.windowController isKindOfClass:NSClassFromString(@"IDEWorkspaceWindowController")]) {
+                id editorArea = [window.windowController valueForKey:@"editorArea"];
+                [editorArea performSelector:@selector(activateConsole:) withObject:self];
+            }
+        }
+    }
+    
+    return console;
 }
 
 - (NSView *)findView:(Class)consoleClass inView:(NSView *)view {
