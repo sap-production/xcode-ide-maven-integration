@@ -30,6 +30,20 @@
 
 @implementation InitializeWindowController
 
+- (void)windowDidLoad {
+    [super windowDidLoad];
+    NSButton *closeButton = [self.window standardWindowButton:NSWindowCloseButton];
+    closeButton.target = self;
+    closeButton.action = @selector(closeButtonClicked);
+}
+
+- (void)closeButtonClicked {
+    [self.window close];
+    if (self.cancel) {
+        self.cancel();
+    }
+}
+
 - (IBAction)run:(id)sender {
     if (self.run) {
         InitializeConfiguration *configuration = [[InitializeConfiguration alloc] init];
@@ -37,12 +51,6 @@
         configuration.debug = self.debugCheckBox.state == NSOnState;
         configuration.forceUpdate = self.forceUpdateCheckBox.state == NSOnState;
         self.run(configuration);
-    }
-}
-
-- (void)windowWillClose:(NSNotification *)notification {
-    if (self.cancel) {
-        self.cancel();
     }
 }
 
