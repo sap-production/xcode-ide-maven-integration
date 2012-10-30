@@ -18,15 +18,14 @@
  * #L%
  */
 
-#import "InitializeConfiguration.h"
 #import "XcodeConsole.h"
 
-@interface RunInitializeOperation : NSOperation {
+@interface RunOperation : NSOperation {
     BOOL isExecuting;
     BOOL isFinished;
 }
 
-- (id)initWithProject:(id)xcode3Project configuration:(InitializeConfiguration *)configuration;
+- (id)initWithTask:(NSTask *)task;
 
 @property (retain) XcodeConsole *xcodeConsole;
 
