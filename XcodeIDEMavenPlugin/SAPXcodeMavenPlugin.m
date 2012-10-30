@@ -238,6 +238,7 @@ static SAPXcodeMavenPlugin *plugin;
     self.initializeWindowController = [[InitializeWindowController alloc] initWithWindowNibName:@"InitializeWindowController"];
     self.initializeWindowController.xcode3Projects = xcode3Projects;
     self.initializeWindowController.run = ^(InitializeConfiguration *configuration) {
+        [NSApp abortModal];
         [self.initializeWindowController close];
         self.initializeWindowController = nil;
         [self runInitializeForProjects:xcode3Projects configuration:configuration];
