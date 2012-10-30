@@ -10,7 +10,7 @@
 		8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8320A31E162EC5C9000167EB /* InitializeWindowController.m */; };
 		8320A321162EC5C9000167EB /* InitializeWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8320A31F162EC5C9000167EB /* InitializeWindowController.xib */; };
 		8321A6BA1624618900758EE2 /* SAPXcodeMavenPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */; };
-		83346ABB1631A8FB00778122 /* RunInitializeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 83346ABA1631A8FB00778122 /* RunInitializeOperation.m */; };
+		83346ABB1631A8FB00778122 /* RunOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 83346ABA1631A8FB00778122 /* RunOperation.m */; };
 		833DFCF5162459D800BE1634 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833DFCF4162459D800BE1634 /* Cocoa.framework */; };
 		833DFCFF162459D900BE1634 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 833DFCFD162459D900BE1634 /* InfoPlist.strings */; };
 		83A5E78E1635585800E87D28 /* XcodeConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A5E78D1635585800E87D28 /* XcodeConsole.m */; };
@@ -23,8 +23,8 @@
 		8320A31E162EC5C9000167EB /* InitializeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitializeWindowController.m; sourceTree = "<group>"; };
 		8320A31F162EC5C9000167EB /* InitializeWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InitializeWindowController.xib; sourceTree = "<group>"; };
 		8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAPXcodeMavenPlugin.m; sourceTree = "<group>"; };
-		83346AB91631A8FB00778122 /* RunInitializeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RunInitializeOperation.h; sourceTree = "<group>"; };
-		83346ABA1631A8FB00778122 /* RunInitializeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RunInitializeOperation.m; sourceTree = "<group>"; };
+		83346AB91631A8FB00778122 /* RunOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RunOperation.h; sourceTree = "<group>"; };
+		83346ABA1631A8FB00778122 /* RunOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RunOperation.m; sourceTree = "<group>"; };
 		833DFCF1162459D800BE1634 /* XcodeIDEMavenPlugin.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XcodeIDEMavenPlugin.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		833DFCF4162459D800BE1634 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		833DFCF7162459D800BE1634 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -102,8 +102,8 @@
 				8320A31F162EC5C9000167EB /* InitializeWindowController.xib */,
 				83AED2E0162ED0B1007412BD /* InitializeConfiguration.h */,
 				83AED2E1162ED0B1007412BD /* InitializeConfiguration.m */,
-				83346AB91631A8FB00778122 /* RunInitializeOperation.h */,
-				83346ABA1631A8FB00778122 /* RunInitializeOperation.m */,
+				83346AB91631A8FB00778122 /* RunOperation.h */,
+				83346ABA1631A8FB00778122 /* RunOperation.m */,
 				83A5E78C1635585800E87D28 /* XcodeConsole.h */,
 				83A5E78D1635585800E87D28 /* XcodeConsole.m */,
 				833DFCFB162459D900BE1634 /* Supporting Files */,
@@ -188,7 +188,7 @@
 				83C91F6A162DA200001AE99D /* MyMenuItem.m in Sources */,
 				8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */,
 				83AED2E2162ED0B1007412BD /* InitializeConfiguration.m in Sources */,
-				83346ABB1631A8FB00778122 /* RunInitializeOperation.m in Sources */,
+				83346ABB1631A8FB00778122 /* RunOperation.m in Sources */,
 				83A5E78E1635585800E87D28 /* XcodeConsole.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -22,7 +22,7 @@
 #import <objc/runtime.h>
 #import "MyMenuItem.h"
 #import "InitializeWindowController.h"
-#import "RunInitializeOperation.h"
+#import "RunOperation.h"
 
 @interface SAPXcodeMavenPlugin ()
 
@@ -263,11 +263,41 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 - (void)runInitializeForProjects:(NSArray *)xcode3Projects configuration:(InitializeConfiguration *)configuration {
+    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
     for (id xcode3Project in xcode3Projects) {
-        RunInitializeOperation *operation = [[RunInitializeOperation alloc] initWithProject:xcode3Project configuration:configuration];
-        operation.xcodeConsole = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
-        [self.initializeQueue addOperation:operation];
+        NSString *path = [[xcode3Project valueForKey:@"itemBaseFilePath"] valueForKey:@"pathString"];
+        path = [path stringByAppendingPathComponent:@"../.."];
+        NSString *pom = [path stringByAppendingPathComponent:@"pom.xml"];
+        if (![NSFileManager.defaultManager fileExistsAtPath:pom]) {
+            [console appendText:[NSString stringWithFormat:@"pom.xml not found at %@\n", pom] color:NSColor.redColor];
+        } else {
+            NSTask *task = [self initializeTaskWithPath:path configuration:configuration];
+            RunOperation *operation = [[RunOperation alloc] initWithTask:task];
+            operation.xcodeConsole = console;
+            [self.initializeQueue addOperation:operation];
+        }
     }
+}
+
+- (NSTask *)initializeTaskWithPath:(NSString *)path configuration:(InitializeConfiguration *)configuration {
+    NSTask *task = [[NSTask alloc] init];
+    task.launchPath = @"/usr/bin/mvn";
+    task.currentDirectoryPath = path;
+    NSMutableArray *args = [@[@"-B"] mutableCopy];
+    if (configuration) {
+        if (configuration.debug) {
+            [args addObject:@"-X"];
+        }
+        if (configuration.forceUpdate) {
+            [args addObject:@"-U"];
+        }
+        if (configuration.clean) {
+            [args addObject:@"clean"];
+        }
+    }
+    [args addObject:@"initialize"];
+    task.arguments = args;
+    return task;
 }
 
 - (NSTextView *)findConsoleAndActivate {
