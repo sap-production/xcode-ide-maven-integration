@@ -23,6 +23,6 @@
 @interface MyMenuItem : NSMenuItem
 
 @property (retain) NSArray *xcode3Projects;
-@property (retain) InitializeConfiguration *configuration;
+@property (retain) id userInfo;
 
 @end
