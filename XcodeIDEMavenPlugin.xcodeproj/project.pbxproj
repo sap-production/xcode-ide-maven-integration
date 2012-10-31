@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		567916CB16401E2A003C7B4C /* MavenMenuBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 567916CA16401E2A003C7B4C /* MavenMenuBuilder.m */; };
 		8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8320A31E162EC5C9000167EB /* InitializeWindowController.m */; };
 		8320A321162EC5C9000167EB /* InitializeWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8320A31F162EC5C9000167EB /* InitializeWindowController.xib */; };
 		8321A6BA1624618900758EE2 /* SAPXcodeMavenPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */; };
@@ -19,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		567916C916401E2A003C7B4C /* MavenMenuBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MavenMenuBuilder.h; sourceTree = "<group>"; };
+		567916CA16401E2A003C7B4C /* MavenMenuBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MavenMenuBuilder.m; sourceTree = "<group>"; };
 		8320A31D162EC5C9000167EB /* InitializeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitializeWindowController.h; sourceTree = "<group>"; };
 		8320A31E162EC5C9000167EB /* InitializeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitializeWindowController.m; sourceTree = "<group>"; };
 		8320A31F162EC5C9000167EB /* InitializeWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InitializeWindowController.xib; sourceTree = "<group>"; };
@@ -95,6 +98,8 @@
 			children = (
 				836ECBF2162569F60024D0CD /* SAPXcodeMavenPlugin.h */,
 				8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */,
+				567916C916401E2A003C7B4C /* MavenMenuBuilder.h */,
+				567916CA16401E2A003C7B4C /* MavenMenuBuilder.m */,
 				83C91F68162DA200001AE99D /* MyMenuItem.h */,
 				83C91F69162DA200001AE99D /* MyMenuItem.m */,
 				8320A31D162EC5C9000167EB /* InitializeWindowController.h */,
@@ -190,6 +195,7 @@
 				83AED2E2162ED0B1007412BD /* InitializeConfiguration.m in Sources */,
 				83346ABB1631A8FB00778122 /* RunOperation.m in Sources */,
 				83A5E78E1635585800E87D28 /* XcodeConsole.m in Sources */,
+				567916CB16401E2A003C7B4C /* MavenMenuBuilder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,6 +23,7 @@
 #import "MyMenuItem.h"
 #import "InitializeWindowController.h"
 #import "RunOperation.h"
+#import "MavenMenuBuilder.h"
 
 @interface SAPXcodeMavenPlugin ()
 
@@ -133,13 +134,43 @@ static SAPXcodeMavenPlugin *plugin;
             NSArray *activeProjects = self.activeWorkspace ? [self activeProjectsFromWorkspace:self.activeWorkspace] : nil;
             self.xcodeMavenPluginSeparatorItem = NSMenuItem.separatorItem;
             [productMenu addItem:self.xcodeMavenPluginSeparatorItem];
-            self.xcodeMavenPluginItem = [[NSMenuItem alloc] initWithTitle:@"Xcode Maven Plugin"
-                                                                   action:nil
-                                                            keyEquivalent:@""];
+            
+            MavenMenuBuilder *builder = [[MavenMenuBuilder alloc] initWithTitle:@"Xcode Maven Plugin" menuItemClass:MyMenuItem.class];
+            
+            // TODO project name in title
+            // TODO initialize all
+            if (activeProjects.count == 1) {
+                MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
+                                                             keyEquivalent:@"i"
+                                                 keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
+                                                                    target:self action:@selector(initialize:)];
+                initializeItem.xcode3Projects = activeProjects;
+                
+                MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize..."
+                                                                                     target:self
+                                                                                     action:@selector(initializeAdvanced:)];
+                initializeItemAdvanced.xcode3Projects = activeProjects;
+            }
+            
+            
+            
+            
+            
+            self.xcodeMavenPluginItem = [builder build];
             [productMenu addItem:self.xcodeMavenPluginItem];
-
-            self.xcodeMavenPluginItem.submenu = [[NSMenu alloc] initWithTitle:@""];
-
+            
+            return;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             MyMenuItem *initializeItem = [[MyMenuItem alloc] initWithTitle:@"Initialize"
                                                                     action:nil
                                                              keyEquivalent:@""];
@@ -278,6 +309,16 @@ static SAPXcodeMavenPlugin *plugin;
         }
     }
 }
+
+// **
+- (NSTask *)showVersionTaskWithPath:(NSString *)path {
+    NSTask *task = [[NSTask alloc] init];
+    task.launchPath = @"/usr/bin/mvn";
+    task.currentDirectoryPath = path;
+    task.arguments = @[@"showVersion"];
+    return task;
+}
+
 
 - (NSTask *)initializeTaskWithPath:(NSString *)path configuration:(InitializeConfiguration *)configuration {
     NSTask *task = [[NSTask alloc] init];
