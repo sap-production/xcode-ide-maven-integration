@@ -137,8 +137,6 @@ static SAPXcodeMavenPlugin *plugin;
             
             MavenMenuBuilder *builder = [[MavenMenuBuilder alloc] initWithTitle:@"Xcode Maven Plugin" menuItemClass:MyMenuItem.class];
             
-            // TODO project name in title
-            // TODO initialize all
             if (activeProjects.count == 1) {
                 MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
                                                              keyEquivalent:@"i"
@@ -150,97 +148,38 @@ static SAPXcodeMavenPlugin *plugin;
                                                                                      target:self
                                                                                      action:@selector(initializeAdvanced:)];
                 initializeItemAdvanced.xcode3Projects = activeProjects;
-            }
-            
-            
-            
-            
-            
-            self.xcodeMavenPluginItem = [builder build];
-            [productMenu addItem:self.xcodeMavenPluginItem];
-            
-            return;
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            MyMenuItem *initializeItem = [[MyMenuItem alloc] initWithTitle:@"Initialize"
-                                                                    action:nil
-                                                             keyEquivalent:@""];
-            [self.xcodeMavenPluginItem.submenu addItem:initializeItem];
-
-            if (activeProjects.count == 1) {
-                id project = activeProjects[0];
-                initializeItem.title = [NSString stringWithFormat:@"Initialize %@", [project name]];
-                initializeItem.keyEquivalent = @"i";
-                initializeItem.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask;
-                initializeItem.target = self;
-                initializeItem.action = @selector(initialize:);
-                initializeItem.xcode3Projects = @[project];
-
-                MyMenuItem *initializeItemAdvanced = [[MyMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Initialize %@...", [project name]]
-                                                                                action:nil
-                                                                         keyEquivalent:@""];
-                initializeItemAdvanced.keyEquivalent = @"i";
-                initializeItemAdvanced.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask | NSAlternateKeyMask;
-                initializeItemAdvanced.target = self;
-                initializeItemAdvanced.action = @selector(initializeAdvanced:);
-                initializeItemAdvanced.alternate = YES;
-                initializeItemAdvanced.xcode3Projects = @[project];
-                [self.xcodeMavenPluginItem.submenu addItem:initializeItemAdvanced];
 
             } else {
-                MyMenuItem *initializeAllItem = [[MyMenuItem alloc] initWithTitle:@"Initialize All"
-                                                                           action:@selector(initializeAll:)
-                                                                    keyEquivalent:@""];
-                initializeAllItem.keyEquivalent = @"a";
-                initializeAllItem.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask;
-                initializeAllItem.target = self;
-                initializeAllItem.xcode3Projects = activeProjects;
-                [self.xcodeMavenPluginItem.submenu addItem:initializeAllItem];
 
-                MyMenuItem *initializeAllItemAdvanced = [[MyMenuItem alloc] initWithTitle:@"Initialize All..."
-                                                                                   action:@selector(initializeAllAdvanced:)
-                                                                            keyEquivalent:@""];
-                initializeAllItemAdvanced.keyEquivalent = @"a";
-                initializeAllItemAdvanced.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask | NSAlternateKeyMask;
-                initializeAllItemAdvanced.alternate = YES;
-                initializeAllItemAdvanced.target = self;
-                initializeAllItemAdvanced.xcode3Projects = activeProjects;
-                [self.xcodeMavenPluginItem.submenu addItem:initializeAllItemAdvanced];
+                MavenMenuBuilder *child = [builder addSubMenuWithTitle:@"Initialize"];
+                
+                int i = 0;
+                
+                for(id activeProject in activeProjects) {
+                    
+                    
+                    NSString *keyEquivalent = ((++i == activeProjects.count) ? @"i" : @"");
+                                        
+                    NSString *projectName = [activeProject valueForKey:@"name"];
+                    MyMenuItem *item = [child addMenuItemWithTitle:projectName keyEquivalent:keyEquivalent keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
+                    
+                    item.xcode3Projects = @[activeProject];
+                }
 
-                initializeItem.submenu = [[NSMenu alloc] initWithTitle:@""];
+                MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize All"
+                                                             keyEquivalent:@"a"
+                                                 keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
+                                                                    target:self action:@selector(initializeAll:)];
+                initializeItem.xcode3Projects = activeProjects;
 
-                [activeProjects enumerateObjectsUsingBlock:^(id project, NSUInteger idx, BOOL *stop) {
-                    MyMenuItem *initializeProjectItem = [[MyMenuItem alloc] initWithTitle:[project name]
-                                                                                   action:@selector(initialize:)
-                                                                            keyEquivalent:@""];
-                    [initializeItem.submenu addItem:initializeProjectItem];
-                    if (idx == activeProjects.count-1) {
-                        initializeProjectItem.keyEquivalent = @"i";
-                        initializeProjectItem.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask;
+                MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize All"
+                                                                    target:self action:@selector(initializeAllAdvanced:)];
 
-                        MyMenuItem *initializeProjectItemAdvanced = [[MyMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@...", [project name]]
-                                                                                               action:@selector(initializeAdvanced:)
-                                                                                        keyEquivalent:@""];
-                        initializeProjectItemAdvanced.keyEquivalent = @"i";
-                        initializeProjectItemAdvanced.keyEquivalentModifierMask = NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask | NSAlternateKeyMask;
-                        initializeProjectItemAdvanced.alternate = YES;
-                        initializeProjectItemAdvanced.target = self;
-                        initializeProjectItemAdvanced.xcode3Projects = @[project];
-                        [initializeItem.submenu addItem:initializeProjectItemAdvanced];
-                    }
-                    initializeProjectItem.target = self;
-                    initializeProjectItem.xcode3Projects = @[project];
-                }];
+                initializeItemAdvanced.xcode3Projects = activeProjects;
             }
+
+            self.xcodeMavenPluginItem = [builder build];
+            [productMenu addItem:self.xcodeMavenPluginItem];
         }
     }
 }
