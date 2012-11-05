@@ -24,6 +24,7 @@
 #import "InitializeWindowController.h"
 #import "RunOperation.h"
 #import "MavenMenuBuilder.h"
+#import "FileLogger.h"
 
 @interface SAPXcodeMavenPlugin ()
 
@@ -120,22 +121,35 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 - (void)updateMainMenu {
+
     NSMenu *menu = [NSApp mainMenu];
+    
+    [FileLogger log:@"Updating main menu ..."];
+     
     for (NSMenuItem *item in menu.itemArray) {
-        if ([item.title isEqualToString:@"Product"]) {
-            NSMenu *productMenu = item.submenu;
-            if (self.xcodeMavenPluginItem) {
+        if (![item.title isEqualToString:@"Product"])
+            continue;
+
+        [FileLogger log:@"Product menu found."];
+        
+        NSMenu *productMenu = item.submenu;
+
+        if (self.xcodeMavenPluginItem) {
                 [productMenu removeItem:self.xcodeMavenPluginSeparatorItem];
                 self.xcodeMavenPluginSeparatorItem = nil;
                 [productMenu removeItem:self.xcodeMavenPluginItem];
                 self.xcodeMavenPluginItem = nil;
-            }
-
-            NSArray *activeProjects = self.activeWorkspace ? [self activeProjectsFromWorkspace:self.activeWorkspace] : nil;
-            self.xcodeMavenPluginSeparatorItem = NSMenuItem.separatorItem;
-            [productMenu addItem:self.xcodeMavenPluginSeparatorItem];
             
-            MavenMenuBuilder *builder = [[MavenMenuBuilder alloc] initWithTitle:@"Xcode Maven Plugin" menuItemClass:MyMenuItem.class];
+            [FileLogger log:@"Old Plugin entry removed from product menu."];
+        }
+
+        NSArray *activeProjects = self.activeWorkspace ? [self activeProjectsFromWorkspace:self.activeWorkspace] : nil;
+        
+        self.xcodeMavenPluginSeparatorItem = NSMenuItem.separatorItem;
+        
+        [productMenu addItem:self.xcodeMavenPluginSeparatorItem];
+        
+        MavenMenuBuilder *builder = [[MavenMenuBuilder alloc] initWithTitle:@"Xcode Maven Plugin" menuItemClass:MyMenuItem.class];
             
             if (activeProjects.count == 1) {
                 MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
@@ -148,6 +162,13 @@ static SAPXcodeMavenPlugin *plugin;
                                                                                      target:self
                                                                                      action:@selector(initializeAdvanced:)];
                 initializeItemAdvanced.xcode3Projects = activeProjects;
+                
+                
+                
+                MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+                
+                updatePomMenuItem.xcode3Projects = activeProjects;
+                [FileLogger log:@"\"Update Pom\" menu item added."];
 
             } else {
 
@@ -180,7 +201,7 @@ static SAPXcodeMavenPlugin *plugin;
 
             self.xcodeMavenPluginItem = [builder build];
             [productMenu addItem:self.xcodeMavenPluginItem];
-        }
+        
     }
 }
 
@@ -193,6 +214,10 @@ static SAPXcodeMavenPlugin *plugin;
     for (id buildActionEntry in buildActionEntries) {
         id buildableReference = [buildActionEntry valueForKey:@"buildableReference"];
         id xcode3Project = [buildableReference valueForKey:@"referencedContainer"];
+        if(!xcode3Project) {
+            continue;
+        }
+
         if (![projects containsObject:xcode3Project]) {
             [projects addObject:xcode3Project];
         }
@@ -249,15 +274,54 @@ static SAPXcodeMavenPlugin *plugin;
     }
 }
 
-// **
-- (NSTask *)showVersionTaskWithPath:(NSString *)path {
+- (NSString *) getMavenProjectPath:(id)xcode3Project {
+    
+    if(! xcode3Project) {
+        return nil;
+    }
+    
+    NSString *path = [[xcode3Project valueForKey:@"itemBaseFilePath"] valueForKey:@"pathString"];
+    return [path stringByAppendingPathComponent:@"../.."];
+}
+
+- (void)updateVersionInPom:(MyMenuItem *) menuItem {
+
+    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
+    
+    NSString *mavenProjectPath = [self getMavenProjectPath:menuItem.xcode3Projects[0]];
+
+    if (![NSFileManager.defaultManager fileExistsAtPath:[mavenProjectPath stringByAppendingString:@"/pom.xml"]]) {
+        [console appendText:[NSString stringWithFormat:@"pom.xml not found at %@\n", mavenProjectPath] color:NSColor.redColor];
+        return;
+    }
+        
+    NSTask *task = [self updateVersionTaskWithPath:mavenProjectPath];
+    RunOperation *operation = [[RunOperation alloc] initWithTask:task];
+    operation.xcodeConsole = console;
+    [self.initializeQueue addOperation:operation];
+    
+}
+
+- (NSTask *)updateVersionTaskWithPath:(NSString *)path {
+    
     NSTask *task = [[NSTask alloc] init];
     task.launchPath = @"/usr/bin/mvn";
     task.currentDirectoryPath = path;
-    task.arguments = @[@"showVersion"];
+    
+    NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:3];
+    
+    NSString *pluginGAV = @"com.sap.prd.mobile.ios.mios:xcode-maven-plugin:1.6.1-SNAPSHOT";
+    
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"set-default-configuration"]];
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"save-build-settings"]];
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"update-version-in-pom"]];
+    
+    task.arguments = arguments;
+    
+    [FileLogger log: @"Trigger version update."];
+    
     return task;
 }
-
 
 - (NSTask *)initializeTaskWithPath:(NSString *)path configuration:(InitializeConfiguration *)configuration {
     NSTask *task = [[NSTask alloc] init];
