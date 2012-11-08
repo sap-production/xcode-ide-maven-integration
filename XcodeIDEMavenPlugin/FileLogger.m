@@ -23,7 +23,7 @@
         [[NSFileManager defaultManager] createFileAtPath:logFilePath contents:nil attributes:nil];
     }
     
-    NSString *logMessage = [message stringByAppendingString:@"\n"];
+    NSString *logMessage =  [NSString stringWithFormat:@"%@: %@\n", [NSDate date], message];
     
     [fileHandle seekToEndOfFile];
     [fileHandle writeData:[logMessage dataUsingEncoding:NSUTF8StringEncoding]];
