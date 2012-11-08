@@ -15,21 +15,29 @@
 
 @interface  UpdateVersionInPomTask()
 @property (retain) NSOperationQueue *initializeQueue;
+@property (retain) XcodeConsole *console;
 @end
 
 @implementation UpdateVersionInPomTask
 
--(void)updateVersionInAllPoms:(MyMenuItem *) menuItem {
-    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
-    [self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:console];
+- (UpdateVersionInPomTask *)initWithConsole:(XcodeConsole *)console Queue:(NSOperationQueue *)queue {
+    
+    self = [super init];
+    
+    if(self)
+    {
+        self.initializeQueue = queue;
+        self.console = console;
+    }
+    
+    return self;
 }
 
 - (void)updateVersionInPom:(MyMenuItem *) menuItem {
-    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
-    [self runUpdateVersionInPomForProject:menuItem.xcode3Projects[0] withConsole:console];
+    [self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:self.console];
 }
 
--(void)runUpdateVersionInPomForProjects:(NSArray *)xcode3Projects withConsole:(XcodeConsole *)console {
+- (void)runUpdateVersionInPomForProjects:(NSArray *)xcode3Projects withConsole:(XcodeConsole *)console {
     
     for(id xcode3Project in xcode3Projects) {
         [self runUpdateVersionInPomForProject:xcode3Project withConsole:console];
@@ -77,36 +85,4 @@
     
     return task;
 }
-
-- (NSTextView *)findConsoleAndActivate {
-    Class consoleTextViewClass = objc_getClass("IDEConsoleTextView");
-    NSTextView *console = (NSTextView *)[self findView:consoleTextViewClass inView:NSApplication.sharedApplication.mainWindow.contentView];
-    
-    if (console) {
-        NSWindow *window = NSApplication.sharedApplication.keyWindow;
-        if ([window isKindOfClass:objc_getClass("IDEWorkspaceWindow")]) {
-            if ([window.windowController isKindOfClass:NSClassFromString(@"IDEWorkspaceWindowController")]) {
-                id editorArea = [window.windowController valueForKey:@"editorArea"];
-                [editorArea performSelector:@selector(activateConsole:) withObject:self];
-            }
-        }
-    }
-    
-    return console;
-}
-
-- (NSView *)findView:(Class)consoleClass inView:(NSView *)view {
-    if ([view isKindOfClass:consoleClass]) {
-        return view;
-    }
-    
-    for (NSView *v in view.subviews) {
-        NSView *result = [self findView:consoleClass inView:v];
-        if (result) {
-            return result;
-        }
-    }
-    return nil;
-}
-
 @end
