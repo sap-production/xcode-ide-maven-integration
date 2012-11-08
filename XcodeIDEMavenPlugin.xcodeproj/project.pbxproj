@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5614D57D164BDAA000CD15B2 /* UpdateVersionPomTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 5614D57C164BDAA000CD15B2 /* UpdateVersionPomTask.m */; };
 		5655D76A164A91F50087C2DE /* FileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 5655D769164A91F50087C2DE /* FileLogger.m */; };
 		567916CB16401E2A003C7B4C /* MavenMenuBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 567916CA16401E2A003C7B4C /* MavenMenuBuilder.m */; };
 		8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8320A31E162EC5C9000167EB /* InitializeWindowController.m */; };
@@ -21,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5614D57B164BDAA000CD15B2 /* UpdateVersionInPomTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateVersionInPomTask.h; sourceTree = "<group>"; };
+		5614D57C164BDAA000CD15B2 /* UpdateVersionPomTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateVersionPomTask.m; sourceTree = "<group>"; };
 		5655D768164A91F50087C2DE /* FileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileLogger.h; sourceTree = "<group>"; };
 		5655D769164A91F50087C2DE /* FileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileLogger.m; sourceTree = "<group>"; };
 		567916C916401E2A003C7B4C /* MavenMenuBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MavenMenuBuilder.h; sourceTree = "<group>"; };
@@ -117,6 +120,8 @@
 				833DFCFB162459D900BE1634 /* Supporting Files */,
 				5655D768164A91F50087C2DE /* FileLogger.h */,
 				5655D769164A91F50087C2DE /* FileLogger.m */,
+				5614D57B164BDAA000CD15B2 /* UpdateVersionInPomTask.h */,
+				5614D57C164BDAA000CD15B2 /* UpdateVersionPomTask.m */,
 			);
 			path = XcodeIDEMavenPlugin;
 			sourceTree = "<group>";
@@ -202,6 +207,7 @@
 				83A5E78E1635585800E87D28 /* XcodeConsole.m in Sources */,
 				567916CB16401E2A003C7B4C /* MavenMenuBuilder.m in Sources */,
 				5655D76A164A91F50087C2DE /* FileLogger.m in Sources */,
+				5614D57D164BDAA000CD15B2 /* UpdateVersionPomTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

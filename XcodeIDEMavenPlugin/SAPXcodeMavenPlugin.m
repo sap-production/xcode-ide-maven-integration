@@ -25,6 +25,7 @@
 #import "RunOperation.h"
 #import "MavenMenuBuilder.h"
 #import "FileLogger.h"
+#import "UpdateVersionInPomTask.h"
 
 @interface SAPXcodeMavenPlugin ()
 
@@ -162,7 +163,7 @@ static SAPXcodeMavenPlugin *plugin;
         if (activeProjects.count == 1) {
             
             NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
-            [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
+            [FileLogger log:[@"Single active project found. Pom file path is: " stringByAppendingString:pomFilePath]];
             
             atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
             
@@ -185,6 +186,8 @@ static SAPXcodeMavenPlugin *plugin;
             
         } else {
             
+            [FileLogger log: [NSString stringWithFormat:@"%ld active projects found.", activeProjects.count]];
+            
             MavenMenuBuilder *initializeChild = [builder addSubMenuWithTitle:@"Initialize"];
             MavenMenuBuilder *updatePomChild = [builder addSubMenuWithTitle:@"Update Pom"];
             
@@ -200,17 +203,12 @@ static SAPXcodeMavenPlugin *plugin;
                 
                 NSString *projectName = [activeProject valueForKey:@"name"];
                 
-
-                
                 NSString *keyEquivalentInitialize = ((i == activeProjects.count) ? @"i" : @"");
                 
                 MyMenuItem *initializeItem = [initializeChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentInitialize keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
                 
                 initializeItem.xcode3Projects = @[activeProject];
 
-                
-                
-                
                 NSString *keyEquivalentUpdatePom = ((i == activeProjects.count) ? @"u" : @"");
                 
                 MyMenuItem *updatePomItem = [updatePomChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentUpdatePom keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
@@ -333,13 +331,17 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 -(void)updateVersionInAllPoms:(MyMenuItem *) menuItem {
-    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
-    [self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:console];
+    
+    [[[UpdateVersionInPomTask alloc] init] updateVersionInAllPoms:menuItem];
+    
+    //XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
+    //[self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:console];
 }
 
 - (void)updateVersionInPom:(MyMenuItem *) menuItem {
-    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
-    [self runUpdateVersionInPomForProject:menuItem.xcode3Projects[0] withConsole:console];
+    [[[UpdateVersionInPomTask alloc] init] updateVersionInPom:menuItem];
+    //XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
+    //[self runUpdateVersionInPomForProject:menuItem.xcode3Projects[0] withConsole:console];
 }
 
 -(void)runUpdateVersionInPomForProjects:(NSArray *)xcode3Projects withConsole:(XcodeConsole *)console {

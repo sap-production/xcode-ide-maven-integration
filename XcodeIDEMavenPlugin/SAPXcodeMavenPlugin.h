@@ -19,5 +19,5 @@
  */
 
 @interface SAPXcodeMavenPlugin : NSObject
-
++(NSString *) getMavenProjectRootDirectory:(id) xcode3Project;
 @end
