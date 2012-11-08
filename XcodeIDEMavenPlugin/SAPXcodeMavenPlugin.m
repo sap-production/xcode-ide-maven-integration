@@ -120,6 +120,22 @@ static SAPXcodeMavenPlugin *plugin;
     return nil;
 }
 
+
+-(void)cleanupProductMenu:(NSMenu *) productMenu {
+
+    if(self.xcodeMavenPluginSeparatorItem) {
+        [productMenu removeItem:self.xcodeMavenPluginSeparatorItem];
+        self.xcodeMavenPluginSeparatorItem = nil;
+        [FileLogger log:@"Old separator item removed from product menu."];
+    }
+    if (self.xcodeMavenPluginItem) {
+        [productMenu removeItem:self.xcodeMavenPluginItem];
+        self.xcodeMavenPluginItem = nil;
+        [FileLogger log:@"Old Plugin entry removed from product menu."];
+    }
+
+}
+
 - (void)updateMainMenu {
 
     NSMenu *menu = [NSApp mainMenu];
@@ -127,23 +143,15 @@ static SAPXcodeMavenPlugin *plugin;
     [FileLogger log:@"Updating main menu ..."];
      
     for (NSMenuItem *item in menu.itemArray) {
+        
         if (![item.title isEqualToString:@"Product"])
             continue;
 
         [FileLogger log:@"Product menu found."];
         
         NSMenu *productMenu = item.submenu;
-
-        if(self.xcodeMavenPluginSeparatorItem) {
-            [productMenu removeItem:self.xcodeMavenPluginSeparatorItem];
-            self.xcodeMavenPluginSeparatorItem = nil;
-            [FileLogger log:@"Old separator item removed from product menu."];
-        }
-        if (self.xcodeMavenPluginItem) {
-            [productMenu removeItem:self.xcodeMavenPluginItem];
-            self.xcodeMavenPluginItem = nil;
-            [FileLogger log:@"Old Plugin entry removed from product menu."];
-        }
+        
+        [self cleanupProductMenu:productMenu];
 
         NSArray *activeProjects = self.activeWorkspace ? [self activeProjectsFromWorkspace:self.activeWorkspace] : nil;
         
