@@ -46,12 +46,14 @@
 
 - (void)runUpdateVersionInPomForProject:(id) xcode3Project withConsole:(XcodeConsole*)console {
     
-    [FileLogger log: [NSString stringWithFormat:@"Update version in Pom triggered for project: %@", [xcode3Project description]]];
+    [FileLogger log: [NSString stringWithFormat:@"Trigger update of version in pom for project: %@.", [xcode3Project description]]];
     
     NSString *mavenProjectPath = [SAPXcodeMavenPlugin getMavenProjectRootDirectory:xcode3Project];
     
     if (![NSFileManager.defaultManager fileExistsAtPath:[mavenProjectPath stringByAppendingPathComponent:@"pom.xml"]]) {
-        [console appendText:[NSString stringWithFormat:@"pom.xml not found at %@\n", mavenProjectPath] color:NSColor.redColor];
+        NSString *errorMessage = [NSString stringWithFormat:@"pom.xml not found at %@.", mavenProjectPath];
+        [FileLogger log:errorMessage];
+        [console appendText:[errorMessage stringByAppendingString:@"\n"] color:NSColor.redColor];
         return;
     }
     
@@ -59,6 +61,7 @@
     RunOperation *operation = [[RunOperation alloc] initWithTask:task];
     operation.xcodeConsole = console;
     [self.initializeQueue addOperation:operation];
+    [FileLogger log:[NSString stringWithFormat:@"Update of version in pom triggered for project %@.", [xcode3Project description]]];
     
 }
 
