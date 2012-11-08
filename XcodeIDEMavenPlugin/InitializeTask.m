@@ -9,6 +9,7 @@
 #import "InitializeTask.h"
 #import "SAPXcodeMavenPlugin.h"
 #import "RunOperation.h"
+#import "FileLogger.h"
 
 @interface InitializeTask()
 @property (retain) NSOperationQueue *initializeQueue;
@@ -42,16 +43,27 @@
 
 - (void)runInitializeForProjects:(NSArray *)xcode3Projects configuration:(InitializeConfiguration *)configuration {
     for (id xcode3Project in xcode3Projects) {
+        
+        [FileLogger log:[NSString stringWithFormat:@"Trigger initialize for project %@.", [xcode3Project description]]];
+        
         NSString *mavenProjectRootDirectory = [SAPXcodeMavenPlugin getMavenProjectRootDirectory:xcode3Project];
         NSString *pom = [SAPXcodeMavenPlugin getPomFilePath:xcode3Project];
+        
         if (![NSFileManager.defaultManager fileExistsAtPath:pom]) {
-            [self.console appendText:[NSString stringWithFormat:@"pom.xml not found at %@\n", pom] color:NSColor.redColor];
-        } else {
-            NSTask *task = [self initializeTaskWithPath:mavenProjectRootDirectory configuration:configuration];
-            RunOperation *operation = [[RunOperation alloc] initWithTask:task];
-            operation.xcodeConsole = self.console;
-            [self.initializeQueue addOperation:operation];
+
+            NSString * errorMessage = [NSString stringWithFormat:@"pom.xml not found at %@.", pom];
+            [FileLogger log:errorMessage];
+            [self.console appendText:[errorMessage stringByAppendingString:@"\n"] color:NSColor.redColor];
+            return;
+
         }
+
+        NSTask *task = [self initializeTaskWithPath:mavenProjectRootDirectory configuration:configuration];
+        RunOperation *operation = [[RunOperation alloc] initWithTask:task];
+        operation.xcodeConsole = self.console;
+        [self.initializeQueue addOperation:operation];
+        [FileLogger log:[NSString stringWithFormat:@"Initialization triggered for project %@.", [xcode3Project description]]];
+        
     }
 }
 
