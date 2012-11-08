@@ -56,12 +56,12 @@ static SAPXcodeMavenPlugin *plugin;
 	if (self) {
         self.initializeQueue = [[NSOperationQueue alloc] init];
         self.initializeQueue.maxConcurrentOperationCount = 1;
-
+        
         [NSNotificationCenter.defaultCenter addObserver:self
                                                selector:@selector(buildProductsLocationDidChange:)
                                                    name:@"IDEWorkspaceBuildProductsLocationDidChangeNotification"
                                                  object:nil];
-
+        
         [NSApplication.sharedApplication addObserver:self
                                           forKeyPath:@"mainWindow"
                                              options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld
@@ -99,9 +99,9 @@ static SAPXcodeMavenPlugin *plugin;
                 // do nothing
             }
         }
-
+        
         self.activeWorkspace = newWorkspace;
-
+        
         if (self.activeWorkspace) {
             id runContextManager = [self.activeWorkspace valueForKey:@"runContextManager"];
             if (runContextManager) {
@@ -122,7 +122,7 @@ static SAPXcodeMavenPlugin *plugin;
 
 
 -(void)cleanupProductMenu:(NSMenu *) productMenu {
-
+    
     if(self.xcodeMavenPluginSeparatorItem) {
         [productMenu removeItem:self.xcodeMavenPluginSeparatorItem];
         self.xcodeMavenPluginSeparatorItem = nil;
@@ -133,88 +133,88 @@ static SAPXcodeMavenPlugin *plugin;
         self.xcodeMavenPluginItem = nil;
         [FileLogger log:@"Old Plugin entry removed from product menu."];
     }
-
+    
 }
 
 - (void)updateMainMenu {
-
+    
     NSMenu *menu = [NSApp mainMenu];
     
     [FileLogger log:@"Updating main menu ..."];
-     
+    
     for (NSMenuItem *item in menu.itemArray) {
         
         if (![item.title isEqualToString:@"Product"])
             continue;
-
+        
         [FileLogger log:@"Product menu found."];
         
         NSMenu *productMenu = item.submenu;
         
         [self cleanupProductMenu:productMenu];
-
+        
         NSArray *activeProjects = self.activeWorkspace ? [self activeProjectsFromWorkspace:self.activeWorkspace] : nil;
         
         MavenMenuBuilder *builder = [[MavenMenuBuilder alloc] initWithTitle:@"Xcode Maven Plugin" menuItemClass:MyMenuItem.class];
-            
+        
         bool atLeastOnePomFileFound = false;
         
-            if (activeProjects.count == 1) {
-                                
+        if (activeProjects.count == 1) {
+            
+            NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
+            [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
+            
+            atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
+            
+            MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
+                                                         keyEquivalent:@"i"
+                                             keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
+                                                                target:self action:@selector(initialize:)];
+            initializeItem.xcode3Projects = activeProjects;
+            
+            MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize..."
+                                                                                 target:self
+                                                                                 action:@selector(initializeAdvanced:)];
+            initializeItemAdvanced.xcode3Projects = activeProjects;
+            
+            MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+            
+            updatePomMenuItem.xcode3Projects = activeProjects;
+            [FileLogger log:@"\"Update Pom\" menu item added."];
+            
+            
+        } else {
+            
+            MavenMenuBuilder *child = [builder addSubMenuWithTitle:@"Initialize"];
+            
+            int i = 0;
+            
+            for(id activeProject in activeProjects) {
+                
                 NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
                 [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
-                
                 atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
                 
-                MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
-                                                             keyEquivalent:@"i"
-                                                 keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
-                                                                    target:self action:@selector(initialize:)];
-                initializeItem.xcode3Projects = activeProjects;
+                NSString *keyEquivalent = ((++i == activeProjects.count) ? @"i" : @"");
                 
-                MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize..."
-                                                                                     target:self
-                                                                                     action:@selector(initializeAdvanced:)];
-                initializeItemAdvanced.xcode3Projects = activeProjects;
-                                
-                MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+                NSString *projectName = [activeProject valueForKey:@"name"];
+                MyMenuItem *item = [child addMenuItemWithTitle:projectName keyEquivalent:keyEquivalent keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
                 
-                updatePomMenuItem.xcode3Projects = activeProjects;
-                [FileLogger log:@"\"Update Pom\" menu item added."];
-                
-
-            } else {
-
-                MavenMenuBuilder *child = [builder addSubMenuWithTitle:@"Initialize"];
-                
-                int i = 0;
-                
-                for(id activeProject in activeProjects) {
-
-                    NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
-                    [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
-                    atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
-                                        
-                    NSString *keyEquivalent = ((++i == activeProjects.count) ? @"i" : @"");
-                                        
-                    NSString *projectName = [activeProject valueForKey:@"name"];
-                    MyMenuItem *item = [child addMenuItemWithTitle:projectName keyEquivalent:keyEquivalent keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
-                    
-                    item.xcode3Projects = @[activeProject];
-                }
-
-                MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize All"
-                                                             keyEquivalent:@"a"
-                                                 keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
-                                                                    target:self action:@selector(initializeAll:)];
-                initializeItem.xcode3Projects = activeProjects;
-
-                MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize All"
-                                                                    target:self action:@selector(initializeAllAdvanced:)];
-
-                initializeItemAdvanced.xcode3Projects = activeProjects;
+                item.xcode3Projects = @[activeProject];
             }
-
+            
+            MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize All"
+                                                         keyEquivalent:@"a"
+                                             keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
+                                                                target:self action:@selector(initializeAll:)];
+            initializeItem.xcode3Projects = activeProjects;
+            
+            MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize All"
+                                                                                 target:self action:@selector(initializeAllAdvanced:)];
+            
+            initializeItemAdvanced.xcode3Projects = activeProjects;
+        }
+        
         if(atLeastOnePomFileFound) {
             self.xcodeMavenPluginSeparatorItem = NSMenuItem.separatorItem;
             [productMenu addItem:self.xcodeMavenPluginSeparatorItem];
@@ -238,7 +238,7 @@ static SAPXcodeMavenPlugin *plugin;
         if(!xcode3Project) {
             continue;
         }
-
+        
         if (![projects containsObject:xcode3Project]) {
             [projects addObject:xcode3Project];
         }
@@ -314,16 +314,16 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 - (void)updateVersionInPom:(MyMenuItem *) menuItem {
-
+    
     XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
     
     NSString *mavenProjectPath = [self getMavenProjectPath:menuItem.xcode3Projects[0]];
-
+    
     if (![NSFileManager.defaultManager fileExistsAtPath:[mavenProjectPath stringByAppendingString:@"/pom.xml"]]) {
         [console appendText:[NSString stringWithFormat:@"pom.xml not found at %@\n", mavenProjectPath] color:NSColor.redColor];
         return;
     }
-        
+    
     NSTask *task = [self updateVersionTaskWithPath:mavenProjectPath];
     RunOperation *operation = [[RunOperation alloc] initWithTask:task];
     operation.xcodeConsole = console;
@@ -376,7 +376,7 @@ static SAPXcodeMavenPlugin *plugin;
 - (NSTextView *)findConsoleAndActivate {
     Class consoleTextViewClass = objc_getClass("IDEConsoleTextView");
     NSTextView *console = (NSTextView *)[self findView:consoleTextViewClass inView:NSApplication.sharedApplication.mainWindow.contentView];
-
+    
     if (console) {
         NSWindow *window = NSApplication.sharedApplication.keyWindow;
         if ([window isKindOfClass:objc_getClass("IDEWorkspaceWindow")]) {
@@ -394,7 +394,7 @@ static SAPXcodeMavenPlugin *plugin;
     if ([view isKindOfClass:consoleClass]) {
         return view;
     }
-
+    
     for (NSView *v in view.subviews) {
         NSView *result = [self findView:consoleClass inView:v];
         if (result) {
