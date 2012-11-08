@@ -185,34 +185,59 @@ static SAPXcodeMavenPlugin *plugin;
             
         } else {
             
-            MavenMenuBuilder *child = [builder addSubMenuWithTitle:@"Initialize"];
+            MavenMenuBuilder *initializeChild = [builder addSubMenuWithTitle:@"Initialize"];
+            MavenMenuBuilder *updatePomChild = [builder addSubMenuWithTitle:@"Update Pom"];
             
             int i = 0;
             
             for(id activeProject in activeProjects) {
                 
+                i++;
+                
                 NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
                 [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
                 atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
                 
-                NSString *keyEquivalent = ((++i == activeProjects.count) ? @"i" : @"");
-                
                 NSString *projectName = [activeProject valueForKey:@"name"];
-                MyMenuItem *item = [child addMenuItemWithTitle:projectName keyEquivalent:keyEquivalent keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
                 
-                item.xcode3Projects = @[activeProject];
+
+                
+                NSString *keyEquivalentInitialize = ((i == activeProjects.count) ? @"i" : @"");
+                
+                MyMenuItem *initializeItem = [initializeChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentInitialize keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
+                
+                initializeItem.xcode3Projects = @[activeProject];
+
+                
+                
+                
+                NSString *keyEquivalentUpdatePom = ((i == activeProjects.count) ? @"u" : @"");
+                
+                MyMenuItem *updatePomItem = [updatePomChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentUpdatePom keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+                
+                updatePomItem.xcode3Projects = @[activeProject];
+
             }
             
-            MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize All"
+            MyMenuItem *initializeAllItem = [builder addMenuItemWithTitle:@"Initialize All"
                                                          keyEquivalent:@"a"
                                              keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
                                                                 target:self action:@selector(initializeAll:)];
-            initializeItem.xcode3Projects = activeProjects;
+            initializeAllItem.xcode3Projects = activeProjects;
             
             MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize All"
                                                                                  target:self action:@selector(initializeAllAdvanced:)];
             
             initializeItemAdvanced.xcode3Projects = activeProjects;
+            
+
+            MyMenuItem *updateAllPomsItem = [builder addMenuItemWithTitle:@"Update All Poms"
+                                                            keyEquivalent:@"u"
+                                                keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
+                                                                   target:self action:@selector(updateVersionInAllPoms:)];
+            
+            updateAllPomsItem.xcode3Projects = activeProjects;
+
         }
         
         if(atLeastOnePomFileFound) {
@@ -295,6 +320,10 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 +(NSString *) getMavenProjectRootDirectory:(id) xcode3Project {
+    
+    if(! xcode3Project)
+        return nil;
+    
     NSString *path = [[xcode3Project valueForKey:@"itemBaseFilePath"] valueForKey:@"pathString"];
     return [path stringByAppendingPathComponent:@"../.."];
 }
@@ -303,27 +332,34 @@ static SAPXcodeMavenPlugin *plugin;
     return [[SAPXcodeMavenPlugin getMavenProjectRootDirectory:xcode3Project] stringByAppendingPathComponent:@"pom.xml"];
 }
 
-- (NSString *) getMavenProjectPath:(id)xcode3Project {
-    
-    if(! xcode3Project) {
-        return nil;
-    }
-    
-    NSString *path = [[xcode3Project valueForKey:@"itemBaseFilePath"] valueForKey:@"pathString"];
-    return [path stringByAppendingPathComponent:@"../.."];
+-(void)updateVersionInAllPoms:(MyMenuItem *) menuItem {
+    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
+    [self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:console];
 }
 
 - (void)updateVersionInPom:(MyMenuItem *) menuItem {
-    
     XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
+    [self runUpdateVersionInPomForProject:menuItem.xcode3Projects[0] withConsole:console];
+}
+
+-(void)runUpdateVersionInPomForProjects:(NSArray *)xcode3Projects withConsole:(XcodeConsole *)console {
+
+    for(id xcode3Project in xcode3Projects) {
+        [self runUpdateVersionInPomForProject:xcode3Project withConsole:console];
+    }
+}
+
+- (void)runUpdateVersionInPomForProject:(id) xcode3Project withConsole:(XcodeConsole*)console {
     
-    NSString *mavenProjectPath = [self getMavenProjectPath:menuItem.xcode3Projects[0]];
+    [FileLogger log: [NSString stringWithFormat:@"Update version in Pom triggered for project: %@", [xcode3Project description]]];
     
-    if (![NSFileManager.defaultManager fileExistsAtPath:[mavenProjectPath stringByAppendingString:@"/pom.xml"]]) {
+    NSString *mavenProjectPath = [SAPXcodeMavenPlugin getMavenProjectRootDirectory:xcode3Project];
+    
+    if (![NSFileManager.defaultManager fileExistsAtPath:[mavenProjectPath stringByAppendingPathComponent:@"pom.xml"]]) {
         [console appendText:[NSString stringWithFormat:@"pom.xml not found at %@\n", mavenProjectPath] color:NSColor.redColor];
         return;
     }
-    
+        
     NSTask *task = [self updateVersionTaskWithPath:mavenProjectPath];
     RunOperation *operation = [[RunOperation alloc] initWithTask:task];
     operation.xcodeConsole = console;
@@ -337,17 +373,20 @@ static SAPXcodeMavenPlugin *plugin;
     task.launchPath = @"/usr/bin/mvn";
     task.currentDirectoryPath = path;
     
-    NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:3];
+    NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:8];
     
     NSString *pluginGAV = @"com.sap.prd.mobile.ios.mios:xcode-maven-plugin:1.6.1-SNAPSHOT";
     
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"check-prerequisites"]];
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"change-artifact-id"]];
     [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"set-default-configuration"]];
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"xcode-project-validate"]];
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"prepare-xcode-build"]];
+    [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"copy-sources"]];
     [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"save-build-settings"]];
     [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"update-version-in-pom"]];
     
     task.arguments = arguments;
-    
-    [FileLogger log: @"Trigger version update."];
     
     return task;
 }
