@@ -160,6 +160,12 @@ static SAPXcodeMavenPlugin *plugin;
         bool atLeastOnePomFileFound = false;
         
             if (activeProjects.count == 1) {
+                                
+                NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
+                [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
+                
+                atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
+                
                 MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
                                                              keyEquivalent:@"i"
                                                  keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
@@ -170,12 +176,7 @@ static SAPXcodeMavenPlugin *plugin;
                                                                                      target:self
                                                                                      action:@selector(initializeAdvanced:)];
                 initializeItemAdvanced.xcode3Projects = activeProjects;
-                
-                NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
-                [FileLogger log:[@"Pom file path is: " stringByAppendingString:pomFilePath]];
-                
-                atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
-                
+                                
                 MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
                 
                 updatePomMenuItem.xcode3Projects = activeProjects;
