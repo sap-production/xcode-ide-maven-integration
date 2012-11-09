@@ -44,6 +44,11 @@
 
 @implementation SAPXcodeMavenPlugin
 
+NSString *FETCH_ALL_LIBS = @"Fetch Libs For All Projects";
+NSString *FETCH_LIBS = @"Fetch Libs";
+NSString *UPDATE_VERSION_IN_POM = @"Update Version in Pom";
+NSString *UPDATE_VERSION_IN_ALL_POMS = @"Update Version In All Poms";
+
 static SAPXcodeMavenPlugin *plugin;
 
 + (id)sharedSAPXcodeMavenPlugin {
@@ -178,32 +183,30 @@ static SAPXcodeMavenPlugin *plugin;
         
         if (activeProjects.count == 1) {
                         
-            [FileLogger log: [NSString stringWithFormat:@"Project found: %@", [activeProjects[0] description]]];
-            
             NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
+ 
             [FileLogger log:[@"Single active project found. Pom file path is: " stringByAppendingString:pomFilePath]];
             
             atLeastOnePomFileFound = atLeastOnePomFileFound | [[NSFileManager defaultManager] isReadableFileAtPath:pomFilePath];
             
-            MyMenuItem *initializeItem = [builder addMenuItemWithTitle:@"Initialize"
+            MyMenuItem *initializeItem = [builder addMenuItemWithTitle:FETCH_LIBS
                                                          keyEquivalent:@"i"
                                              keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
                                                                 target:self action:@selector(initialize:)];
             initializeItem.xcode3Projects = activeProjects;
             
-            MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize..."
+            MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle: [FETCH_ALL_LIBS stringByAppendingString:@"..."]
                                                                                  target:self
                                                                                  action:@selector(initializeAdvanced:)];
             initializeItemAdvanced.xcode3Projects = activeProjects;
             
             if([self isApp:activeProjects[0]]) {
             
-                MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+                MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:UPDATE_VERSION_IN_POM keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
             
                 updatePomMenuItem.xcode3Projects = activeProjects;
                 [FileLogger log:@"\"Update Pom\" menu item added."];
             }
-            
             
         } else {
             
@@ -218,11 +221,11 @@ static SAPXcodeMavenPlugin *plugin;
                 }
             }
             
-            MavenMenuBuilder *initializeChild = [builder addSubMenuWithTitle:@"Fetch Libs"];
+            MavenMenuBuilder *initializeChild = [builder addSubMenuWithTitle:FETCH_LIBS];
             MavenMenuBuilder *updatePomChild = nil;
             
             if(applicationProjectFound)
-                updatePomChild = [builder addSubMenuWithTitle:@"Update Version In Pom"];
+                updatePomChild = [builder addSubMenuWithTitle:UPDATE_VERSION_IN_POM];
             
             int i = 0;
             
@@ -252,19 +255,19 @@ static SAPXcodeMavenPlugin *plugin;
                 }
             }
             
-            MyMenuItem *initializeAllItem = [builder addMenuItemWithTitle:@"Fetch Libs For All Projects"
+            MyMenuItem *initializeAllItem = [builder addMenuItemWithTitle:FETCH_ALL_LIBS
                                                          keyEquivalent:@"a"
                                              keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
                                                                 target:self action:@selector(initialize:)];
             initializeAllItem.xcode3Projects = activeProjects;
             
-            MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:@"Initialize All"
+            MyMenuItem *initializeItemAdvanced = [builder addAlternateMenuItemWithTitle:FETCH_ALL_LIBS
                                                                                  target:self action:@selector(initializeAdvanced:)];
             
             initializeItemAdvanced.xcode3Projects = activeProjects;
             
 
-            MyMenuItem *updateAllPomsItem = [builder addMenuItemWithTitle:@"Update Version In All Poms"
+            MyMenuItem *updateAllPomsItem = [builder addMenuItemWithTitle:UPDATE_VERSION_IN_ALL_POMS
                                                             keyEquivalent:@"u"
                                                 keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
                                                                    target:self action:@selector(updateVersionInPom:)];
