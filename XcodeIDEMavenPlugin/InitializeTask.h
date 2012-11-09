@@ -10,8 +10,9 @@
 #import "MyMenuItem.h"
 #import "XcodeConsole.h"
 #import "InitializeWindowController.h"
+#import "Task.h"
 
-@interface InitializeTask : NSObject
+@interface InitializeTask : Task
 - (InitializeTask *) initWithQueue:(NSOperationQueue *)queue initializeWindowController:(InitializeWindowController *) initializeWindowController;
 - (void)initialize:(MyMenuItem *)menuItem;
 - (void)initializeAdvanced:(MyMenuItem *)menuItem;
