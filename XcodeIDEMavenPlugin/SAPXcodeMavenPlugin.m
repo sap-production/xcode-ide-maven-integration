@@ -152,6 +152,11 @@ static SAPXcodeMavenPlugin *plugin;
     }
     
 }
+- (id)invokeMethod:(NSString *) name onInstance:(id) instance {
+
+    SEL selector = NSSelectorFromString(name);
+    return [instance performSelector:selector];
+}
 
 - (void)updateMainMenu {
     
@@ -177,6 +182,8 @@ static SAPXcodeMavenPlugin *plugin;
         bool atLeastOnePomFileFound = false;
         
         if (activeProjects.count == 1) {
+                        
+            [FileLogger log: [NSString stringWithFormat:@"Project found: %@", [activeProjects[0] description]]];
             
             NSString *pomFilePath = [SAPXcodeMavenPlugin getPomFilePath:activeProjects[0]];
             [FileLogger log:[@"Single active project found. Pom file path is: " stringByAppendingString:pomFilePath]];
@@ -194,18 +201,33 @@ static SAPXcodeMavenPlugin *plugin;
                                                                                  action:@selector(initializeAdvanced:)];
             initializeItemAdvanced.xcode3Projects = activeProjects;
             
-            MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+            if([self isApp:activeProjects[0]]) {
             
-            updatePomMenuItem.xcode3Projects = activeProjects;
-            [FileLogger log:@"\"Update Pom\" menu item added."];
+                MyMenuItem *updatePomMenuItem = [builder addMenuItemWithTitle:@"Update Version in Pom." keyEquivalent:@"" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+            
+                updatePomMenuItem.xcode3Projects = activeProjects;
+                [FileLogger log:@"\"Update Pom\" menu item added."];
+            }
             
             
         } else {
             
             [FileLogger log: [NSString stringWithFormat:@"%ld active projects found.", activeProjects.count]];
             
-            MavenMenuBuilder *initializeChild = [builder addSubMenuWithTitle:@"Initialize"];
-            MavenMenuBuilder *updatePomChild = [builder addSubMenuWithTitle:@"Update Version In Pom"];
+            BOOL applicationProjectFound = NO;
+            
+            for(id activeProject in activeProjects) {
+                if([self isApp:activeProject]) {
+                    applicationProjectFound = YES;
+                    break;
+                }
+            }
+            
+            MavenMenuBuilder *initializeChild = [builder addSubMenuWithTitle:@"Fetch Libs"];
+            MavenMenuBuilder *updatePomChild = nil;
+            
+            if(applicationProjectFound)
+                updatePomChild = [builder addSubMenuWithTitle:@"Update Version In Pom"];
             
             int i = 0;
             
@@ -227,13 +249,15 @@ static SAPXcodeMavenPlugin *plugin;
 
                 NSString *keyEquivalentUpdatePom = ((i == activeProjects.count) ? @"u" : @"");
                 
-                MyMenuItem *updatePomItem = [updatePomChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentUpdatePom keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+                if(updatePomChild && [self isApp:activeProject]) {
                 
-                updatePomItem.xcode3Projects = @[activeProject];
-
+                    MyMenuItem *updatePomItem = [updatePomChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentUpdatePom keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(updateVersionInPom:)];
+                
+                    updatePomItem.xcode3Projects = @[activeProject];
+                }
             }
             
-            MyMenuItem *initializeAllItem = [builder addMenuItemWithTitle:@"Initialize All"
+            MyMenuItem *initializeAllItem = [builder addMenuItemWithTitle:@"Fetch Libs For All Projects"
                                                          keyEquivalent:@"a"
                                              keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
                                                                 target:self action:@selector(initialize:)];
@@ -249,8 +273,10 @@ static SAPXcodeMavenPlugin *plugin;
                                                             keyEquivalent:@"u"
                                                 keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
                                                                    target:self action:@selector(updateVersionInPom:)];
+         
+            NSArray *applicationProjects = [self getApplicationProjects:activeProjects];
             
-            updateAllPomsItem.xcode3Projects = activeProjects;
+            updateAllPomsItem.xcode3Projects = applicationProjects;
 
         }
         
@@ -264,6 +290,29 @@ static SAPXcodeMavenPlugin *plugin;
         }
     }
 }
+
+- (BOOL) isApp:(id)xcode3Project {
+    
+    id pbxProject = [xcode3Project valueForKey:@"pbxProject"];
+    id activeTarget = [self invokeMethod:@"activeTarget" onInstance:pbxProject];
+    id infoPlistFilePath = [self invokeMethod:@"infoPlistFilePath" onInstance:activeTarget];
+    
+    return (infoPlistFilePath) ? YES : NO;
+}
+
+- (NSArray *) getApplicationProjects:(NSArray *) xcode3Projects  {
+    
+    NSMutableArray *result = [NSMutableArray arrayWithCapacity:0];
+    
+    for(id xcode3Project in xcode3Projects) {
+        if([self isApp:xcode3Project]) {
+            [result addObject:xcode3Project];
+        }
+    }
+    
+    return result;
+}
+
 
 - (NSArray *)activeProjectsFromWorkspace:(id)workspace {
     id runContextManager = [workspace valueForKey:@"runContextManager"];
