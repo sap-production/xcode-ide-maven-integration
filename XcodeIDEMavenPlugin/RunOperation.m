@@ -172,20 +172,25 @@
 }
 
 - (void)appendLine:(NSString *)line {
+    
+    NSColor *color;
+    
     if ([line hasPrefix:@"[ERROR]"]) {
-        [self.xcodeConsole appendText:line color:NSColor.redColor];
+        color = NSColor.redColor;
     }
     else if ([line hasPrefix:@"[WARNING]"]) {
-        [self.xcodeConsole appendText:line color:NSColor.orangeColor];
-
+        color = NSColor.orangeColor;
     }
     else if ([line hasPrefix:@"[DEBUG]"]) {
-        [self.xcodeConsole appendText:line color:NSColor.grayColor];
+        color = NSColor.grayColor;
+    }
+    else if([line hasPrefix:@"[INFO] !"]) {
+        color = [NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.0 alpha:1.0];
     }
     else {
-        [self.xcodeConsole appendText:line];
+        color = NSColor.blackColor;
     }
-    [self.xcodeConsole appendText:@"\n"];
+    [self.xcodeConsole appendText: [line stringByAppendingString:@"\n"] color:color];
 }
 
 - (void)checkAndSetFinished {
