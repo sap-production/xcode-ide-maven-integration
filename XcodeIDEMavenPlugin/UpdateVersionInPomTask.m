@@ -15,26 +15,25 @@
 
 @interface  UpdateVersionInPomTask()
 @property (retain) NSOperationQueue *initializeQueue;
-@property (retain) XcodeConsole *console;
 @end
 
 @implementation UpdateVersionInPomTask
 
-- (UpdateVersionInPomTask *)initWithConsole:(XcodeConsole *)console Queue:(NSOperationQueue *)queue {
+- (UpdateVersionInPomTask *)initWithQueue:(NSOperationQueue *)queue {
     
     self = [super init];
     
     if(self)
     {
         self.initializeQueue = queue;
-        self.console = console;
     }
     
     return self;
 }
 
 - (void)updateVersionInPom:(MyMenuItem *) menuItem {
-    [self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:self.console];
+    XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
+    [self runUpdateVersionInPomForProjects:menuItem.xcode3Projects withConsole:console];
 }
 
 - (void)runUpdateVersionInPomForProjects:(NSArray *)xcode3Projects withConsole:(XcodeConsole *)console {
@@ -87,5 +86,36 @@
     task.arguments = arguments;
     
     return task;
+}
+
+- (NSTextView *)findConsoleAndActivate {
+    Class consoleTextViewClass = objc_getClass("IDEConsoleTextView");
+    NSTextView *console = (NSTextView *)[self findView:consoleTextViewClass inView:NSApplication.sharedApplication.mainWindow.contentView];
+    
+    if (console) {
+        NSWindow *window = NSApplication.sharedApplication.keyWindow;
+        if ([window isKindOfClass:objc_getClass("IDEWorkspaceWindow")]) {
+            if ([window.windowController isKindOfClass:NSClassFromString(@"IDEWorkspaceWindowController")]) {
+                id editorArea = [window.windowController valueForKey:@"editorArea"];
+                [editorArea performSelector:@selector(activateConsole:) withObject:self];
+            }
+        }
+    }
+    
+    return console;
+}
+
+- (NSView *)findView:(Class)consoleClass inView:(NSView *)view {
+    if ([view isKindOfClass:consoleClass]) {
+        return view;
+    }
+    
+    for (NSView *v in view.subviews) {
+        NSView *result = [self findView:consoleClass inView:v];
+        if (result) {
+            return result;
+        }
+    }
+    return nil;
 }
 @end

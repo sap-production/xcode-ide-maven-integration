@@ -10,23 +10,22 @@
 #import "SAPXcodeMavenPlugin.h"
 #import "RunOperation.h"
 #import "FileLogger.h"
+#import <objc/runtime.h>
 
 @interface InitializeTask()
 @property (retain) NSOperationQueue *initializeQueue;
-@property (retain) XcodeConsole *console;
 @property (retain) InitializeWindowController *initializeWindowController;
 
 @end
 
 @implementation InitializeTask
 
-- (InitializeTask *) initWithConsole:(XcodeConsole *)console Queue:(NSOperationQueue *)queue initializeWindowController:(InitializeWindowController *) initializeWindowController {
+- (InitializeTask *) initWithQueue:(NSOperationQueue *)queue initializeWindowController:(InitializeWindowController *) initializeWindowController {
     
     self = [super init];
     
     if(self) {
         self.initializeQueue = queue;
-        self.console = console;
         self.initializeWindowController = initializeWindowController;
     }
     
@@ -43,6 +42,8 @@
 
 - (void)runInitializeForProjects:(NSArray *)xcode3Projects configuration:(InitializeConfiguration *)configuration {
     for (id xcode3Project in xcode3Projects) {
+
+        XcodeConsole *console = [[XcodeConsole alloc] initWithConsole:[self findConsoleAndActivate]];
         
         [FileLogger log:[NSString stringWithFormat:@"Trigger initialize for project %@.", [xcode3Project description]]];
         
@@ -53,14 +54,14 @@
 
             NSString * errorMessage = [NSString stringWithFormat:@"pom.xml not found at %@.", pom];
             [FileLogger log:errorMessage];
-            [self.console appendText:[errorMessage stringByAppendingString:@"\n"] color:NSColor.redColor];
+            [console appendText:[errorMessage stringByAppendingString:@"\n"] color:NSColor.redColor];
             return;
 
         }
 
         NSTask *task = [self initializeTaskWithPath:mavenProjectRootDirectory configuration:configuration];
         RunOperation *operation = [[RunOperation alloc] initWithTask:task];
-        operation.xcodeConsole = self.console;
+        operation.xcodeConsole = console;
         [self.initializeQueue addOperation:operation];
         [FileLogger log:[NSString stringWithFormat:@"Initialization triggered for project %@.", [xcode3Project description]]];
         
@@ -104,4 +105,34 @@
     return task;
 }
 
+- (NSTextView *)findConsoleAndActivate {
+    Class consoleTextViewClass = objc_getClass("IDEConsoleTextView");
+    NSTextView *console = (NSTextView *)[self findView:consoleTextViewClass inView:NSApplication.sharedApplication.mainWindow.contentView];
+    
+    if (console) {
+        NSWindow *window = NSApplication.sharedApplication.keyWindow;
+        if ([window isKindOfClass:objc_getClass("IDEWorkspaceWindow")]) {
+            if ([window.windowController isKindOfClass:NSClassFromString(@"IDEWorkspaceWindowController")]) {
+                id editorArea = [window.windowController valueForKey:@"editorArea"];
+                [editorArea performSelector:@selector(activateConsole:) withObject:self];
+            }
+        }
+    }
+    
+    return console;
+}
+
+- (NSView *)findView:(Class)consoleClass inView:(NSView *)view {
+    if ([view isKindOfClass:consoleClass]) {
+        return view;
+    }
+    
+    for (NSView *v in view.subviews) {
+        NSView *result = [self findView:consoleClass inView:v];
+        if (result) {
+            return result;
+        }
+    }
+    return nil;
+}
 @end

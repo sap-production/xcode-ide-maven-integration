@@ -12,7 +12,7 @@
 #import "InitializeWindowController.h"
 
 @interface InitializeTask : NSObject
-- (InitializeTask *) initWithConsole:(XcodeConsole *)console Queue:(NSOperationQueue *)queue initializeWindowController:(InitializeWindowController *) initializeWindowController;
+- (InitializeTask *) initWithQueue:(NSOperationQueue *)queue initializeWindowController:(InitializeWindowController *) initializeWindowController;
 - (void)initialize:(MyMenuItem *)menuItem;
 - (void)initializeAdvanced:(MyMenuItem *)menuItem;
 @end
