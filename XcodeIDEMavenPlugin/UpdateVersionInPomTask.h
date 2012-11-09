@@ -11,6 +11,6 @@
 #import "XcodeConsole.h"
 
 @interface UpdateVersionInPomTask : NSObject
-- (UpdateVersionInPomTask *)initWithConsole:(XcodeConsole *)console Queue:(NSOperationQueue *)queue;
+- (UpdateVersionInPomTask *)initWithQueue:(NSOperationQueue *)queue;
 - (void)updateVersionInPom:(MyMenuItem *) menuItem;
 @end
