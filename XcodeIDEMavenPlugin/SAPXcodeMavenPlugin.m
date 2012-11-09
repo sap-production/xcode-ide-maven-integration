@@ -286,16 +286,33 @@ static SAPXcodeMavenPlugin *plugin;
     }
 }
 
-- (id)invokeSelector:(SEL) selector onInstance:(id) instance {
-    return [instance performSelector:selector];
+- (id)invokeSelector:(SEL) selector onInstance:(id) instance withParameters:(NSArray *) params {
+    
+    NSMethodSignature *signature = [instance methodSignatureForSelector:selector];
+    
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    
+    [invocation setTarget:instance];
+    [invocation setSelector:selector];
+        
+    if(params) {
+        for(int i = 0; i < [params count]; i++) {
+            [invocation setArgument:[params objectAtIndex:i] atIndex:i+2]; // 2 --> skip self and cmd
+        }
+    }
+    
+    [invocation invoke];
+    
+    id result;
+    [invocation getReturnValue:&result];
+    return result;
 }
-
 
 - (BOOL) isApp:(id)xcode3Project {
     
     id pbxProject = [xcode3Project valueForKey:@"pbxProject"];
-    id activeTarget = [self invokeSelector:@selector(activeTarget) onInstance:pbxProject];
-    id infoPlistFilePath = [self invokeSelector:@selector(infoPlistFilePath) onInstance:activeTarget];
+    id activeTarget = [self invokeSelector:@selector(activeTarget) onInstance:pbxProject withParameters:nil];
+    id infoPlistFilePath = [self invokeSelector:@selector(infoPlistFilePath) onInstance:activeTarget withParameters:nil];
     
     return (infoPlistFilePath) ? YES : NO;
 }
