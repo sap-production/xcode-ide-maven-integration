@@ -152,11 +152,6 @@ static SAPXcodeMavenPlugin *plugin;
     }
     
 }
-- (id)invokeMethod:(NSString *) name onInstance:(id) instance {
-
-    SEL selector = NSSelectorFromString(name);
-    return [instance performSelector:selector];
-}
 
 - (void)updateMainMenu {
     
@@ -291,11 +286,16 @@ static SAPXcodeMavenPlugin *plugin;
     }
 }
 
+- (id)invokeSelector:(SEL) selector onInstance:(id) instance {
+    return [instance performSelector:selector];
+}
+
+
 - (BOOL) isApp:(id)xcode3Project {
     
     id pbxProject = [xcode3Project valueForKey:@"pbxProject"];
-    id activeTarget = [self invokeMethod:@"activeTarget" onInstance:pbxProject];
-    id infoPlistFilePath = [self invokeMethod:@"infoPlistFilePath" onInstance:activeTarget];
+    id activeTarget = [self invokeSelector:@selector(activeTarget) onInstance:pbxProject];
+    id infoPlistFilePath = [self invokeSelector:@selector(infoPlistFilePath) onInstance:activeTarget];
     
     return (infoPlistFilePath) ? YES : NO;
 }
