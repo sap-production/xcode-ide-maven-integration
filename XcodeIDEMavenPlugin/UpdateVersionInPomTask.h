@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "MyMenuItem.h"
 #import "XcodeConsole.h"
+#import "Task.h"
 
-@interface UpdateVersionInPomTask : NSObject
+@interface UpdateVersionInPomTask : Task
 - (UpdateVersionInPomTask *)initWithQueue:(NSOperationQueue *)queue;
 - (void)updateVersionInPom:(MyMenuItem *) menuItem;
 @end
