@@ -12,6 +12,7 @@
 		567654B4164D03A900D1EB4B /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 567654B3164D03A900D1EB4B /* Task.m */; };
 		567916CB16401E2A003C7B4C /* MavenMenuBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 567916CA16401E2A003C7B4C /* MavenMenuBuilder.m */; };
 		569048DE164BFEBC00D71F32 /* InitializeTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 569048DD164BFEBC00D71F32 /* InitializeTask.m */; };
+		56DCF1A4164D4DED00E94FB9 /* ClassInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 56DCF1A3164D4DED00E94FB9 /* ClassInspector.m */; };
 		8320A320162EC5C9000167EB /* InitializeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8320A31E162EC5C9000167EB /* InitializeWindowController.m */; };
 		8320A321162EC5C9000167EB /* InitializeWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8320A31F162EC5C9000167EB /* InitializeWindowController.xib */; };
 		8321A6BA1624618900758EE2 /* SAPXcodeMavenPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8321A6B91624618900758EE2 /* SAPXcodeMavenPlugin.m */; };
@@ -34,6 +35,8 @@
 		567916CA16401E2A003C7B4C /* MavenMenuBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MavenMenuBuilder.m; sourceTree = "<group>"; };
 		569048DC164BFEBC00D71F32 /* InitializeTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitializeTask.h; sourceTree = "<group>"; };
 		569048DD164BFEBC00D71F32 /* InitializeTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitializeTask.m; sourceTree = "<group>"; };
+		56DCF1A2164D4DED00E94FB9 /* ClassInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassInspector.h; sourceTree = "<group>"; };
+		56DCF1A3164D4DED00E94FB9 /* ClassInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassInspector.m; sourceTree = "<group>"; };
 		8320A31D162EC5C9000167EB /* InitializeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitializeWindowController.h; sourceTree = "<group>"; };
 		8320A31E162EC5C9000167EB /* InitializeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitializeWindowController.m; sourceTree = "<group>"; };
 		8320A31F162EC5C9000167EB /* InitializeWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InitializeWindowController.xib; sourceTree = "<group>"; };
@@ -132,6 +135,8 @@
 				569048DD164BFEBC00D71F32 /* InitializeTask.m */,
 				567654B2164D03A900D1EB4B /* Task.h */,
 				567654B3164D03A900D1EB4B /* Task.m */,
+				56DCF1A2164D4DED00E94FB9 /* ClassInspector.h */,
+				56DCF1A3164D4DED00E94FB9 /* ClassInspector.m */,
 			);
 			path = XcodeIDEMavenPlugin;
 			sourceTree = "<group>";
@@ -220,6 +225,7 @@
 				5614D57D164BDAA000CD15B2 /* UpdateVersionInPomTask.m in Sources */,
 				569048DE164BFEBC00D71F32 /* InitializeTask.m in Sources */,
 				567654B4164D03A900D1EB4B /* Task.m in Sources */,
+				56DCF1A4164D4DED00E94FB9 /* ClassInspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
