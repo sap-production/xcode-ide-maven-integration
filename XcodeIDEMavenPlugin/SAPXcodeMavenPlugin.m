@@ -28,6 +28,7 @@
 #import "UpdateVersionInPomTask.h"
 #import "XcodeConsole.h"
 #import "InitializeTask.h"
+#import "InstallTask.h"
 
 @interface SAPXcodeMavenPlugin ()
 
@@ -48,6 +49,8 @@ NSString *FETCH_ALL_LIBS = @"Fetch Libs For All Projects";
 NSString *FETCH_LIBS = @"Fetch Libs";
 NSString *UPDATE_VERSION_IN_POM = @"Update Version in Pom";
 NSString *UPDATE_VERSION_IN_ALL_POMS = @"Update Version In All Poms";
+NSString *INSTALL = @"Install";
+NSString *INSTALL_ALL = @"Install All";
 
 static SAPXcodeMavenPlugin *plugin;
 
@@ -207,6 +210,13 @@ static SAPXcodeMavenPlugin *plugin;
                 updatePomMenuItem.xcode3Projects = activeProjects;
                 [FileLogger log:@"\"Update Pom\" menu item added."];
             }
+            MyMenuItem *installItem = [builder addMenuItemWithTitle:INSTALL
+                                                      keyEquivalent:@"n"
+                                          keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask
+                                                             target:self
+                                                             action:@selector(install:)];
+            
+            installItem.xcode3Projects = activeProjects;
             
         } else {
             
@@ -226,6 +236,7 @@ static SAPXcodeMavenPlugin *plugin;
             
             if(applicationProjectFound)
                 updatePomChild = [builder addSubMenuWithTitle:UPDATE_VERSION_IN_POM];
+            MavenMenuBuilder *installChild = [builder addSubMenuWithTitle:INSTALL];
             
             int i = 0;
             
@@ -240,10 +251,15 @@ static SAPXcodeMavenPlugin *plugin;
                 NSString *projectName = [activeProject valueForKey:@"name"];
                 
                 NSString *keyEquivalentInitialize = ((i == activeProjects.count) ? @"i" : @"");
+                NSString *keyEquivalentInstall = ((i == activeProjects.count) ? @"n" : @"");
                 
                 MyMenuItem *initializeItem = [initializeChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentInitialize keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(initialize:)];
                 
                 initializeItem.xcode3Projects = @[activeProject];
+                
+                MyMenuItem *installItem = [installChild addMenuItemWithTitle:projectName keyEquivalent:keyEquivalentInstall keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(install:)];
+                
+                installItem.xcode3Projects = @[activeProject];
 
                 NSString *keyEquivalentUpdatePom = ((i == activeProjects.count) ? @"u" : @"");
                 
@@ -276,6 +292,13 @@ static SAPXcodeMavenPlugin *plugin;
             
             updateAllPomsItem.xcode3Projects = applicationProjects;
 
+            MyMenuItem * installAllItem = [builder addMenuItemWithTitle:INSTALL_ALL keyEquivalent:@"n" keyEquivalentModifierMask:NSCommandKeyMask | NSControlKeyMask | NSShiftKeyMask target:self action:@selector(install:)];
+            
+            installAllItem.xcode3Projects = activeProjects;
+            
+            MyMenuItem *installItemAdvanced = [builder addAlternateMenuItemWithTitle:INSTALL_ALL target:self action:@selector(installAdvanced:)];
+            installItemAdvanced.xcode3Projects = activeProjects;
+            
         }
         
         if(atLeastOnePomFileFound) {
@@ -364,7 +387,6 @@ static SAPXcodeMavenPlugin *plugin;
 
 -(InitializeTask *)getInitializeTask {
     return [[InitializeTask alloc] initWithQueue:self.initializeQueue initializeWindowController:self.initializeWindowController];
-    
 }
 
 - (void)updateVersionInPom:(MyMenuItem *) menuItem {
@@ -375,4 +397,15 @@ static SAPXcodeMavenPlugin *plugin;
     return [[UpdateVersionInPomTask alloc] initWithQueue:self.initializeQueue];
 }
 
+- (void)install:(MyMenuItem *)menuItem {
+    [[self getInstallTask] install:menuItem];
+}
+
+- (void)installAdvanced:(MyMenuItem *)menuItem {
+    [[self getInstallTask] installAdvanced:menuItem];
+}
+
+-(InstallTask *) getInstallTask {
+    return [[InstallTask alloc] initWithQueue:self.initializeQueue initializeWindowController:self.initializeWindowController];
+}
 @end
