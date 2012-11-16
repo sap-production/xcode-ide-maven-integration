@@ -40,4 +40,26 @@
     }
     return nil;
 }
+
+- (NSTask *)taskWithName:(NSString *)name Path:(NSString *)path configuration:(InitializeConfiguration *)configuration {
+    NSTask *task = [[NSTask alloc] init];
+    task.launchPath = @"/usr/bin/mvn";
+    task.currentDirectoryPath = path;
+    NSMutableArray *args = [@[@"-B"] mutableCopy];
+    if (configuration) {
+        if (configuration.debug) {
+            [args addObject:@"-X"];
+        }
+        if (configuration.forceUpdate) {
+            [args addObject:@"-U"];
+        }
+        if (configuration.clean) {
+            [args addObject:@"clean"];
+        }
+    }
+    [args addObject:name];
+    task.arguments = args;
+    return task;
+}
+
 @end

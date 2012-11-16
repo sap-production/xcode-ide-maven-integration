@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "InitializeConfiguration.h"
 
 @interface Task : NSObject
 - (NSTextView *)findConsoleAndActivate;
+- (NSTask *)taskWithName:(NSString *)name Path:(NSString *)path configuration:(InitializeConfiguration *)configuration;
 @end
