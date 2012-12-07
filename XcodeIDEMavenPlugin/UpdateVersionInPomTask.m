@@ -72,7 +72,7 @@
     
     NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:8];
     
-    NSString *pluginGAV = @"com.sap.prd.mobile.ios.mios:xcode-maven-plugin:1.6.1-SNAPSHOT";
+    NSString *pluginGAV = @"com.sap.prd.mobile.ios.mios:xcode-maven-plugin";
     
     [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"check-prerequisites"]];
     [arguments addObject: [[NSString alloc] initWithFormat:@"%@:%@", pluginGAV, @"change-artifact-id"]];
