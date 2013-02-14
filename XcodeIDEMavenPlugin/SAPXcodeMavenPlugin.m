@@ -335,12 +335,30 @@ static SAPXcodeMavenPlugin *plugin;
 }
 
 - (BOOL) isApp:(id)xcode3Project {
+
+    //
+    // Ugly heuristics here. But how can this done better?
+    // Starting with Xcode 4.6 there is no activeTarget method
+    // available on the pbxProject.
+    // Up to now we could check if the activeTarget has a infoPlistFile
+    // associated with it.
+    // Now we iterate over the targets. If a target has a infoPlistFile
+    // associated with it we assume it is an application.
+    //
     
     id pbxProject = [xcode3Project valueForKey:@"pbxProject"];
-    id activeTarget = [self invokeSelector:@selector(activeTarget) onInstance:pbxProject withParameters:nil];
-    id infoPlistFilePath = [self invokeSelector:@selector(infoPlistFilePath) onInstance:activeTarget withParameters:nil];
     
-    return (infoPlistFilePath) ? YES : NO;
+    id targets = [self invokeSelector:@selector(targets) onInstance:pbxProject withParameters:nil];
+    
+    for(int i = 0; i< [targets count]; i++) {
+
+        id infoPlistFilePath = [self invokeSelector:@selector(infoPlistFilePath) onInstance:[targets objectAtIndex:i] withParameters:nil];
+        
+        if(infoPlistFilePath)
+            return YES;
+    }
+    
+    return NO;
 }
 
 - (NSArray *) getApplicationProjects:(NSArray *) xcode3Projects  {
