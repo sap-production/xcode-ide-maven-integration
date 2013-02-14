@@ -9,5 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface ClassInspector : NSObject
-
+- (void) inspectMethodsOfClass:(id) instance;
+- (void) inspectPropertiesOfClass:(id) instance;
+- (BOOL) existsClass:(NSString *) name;
 @end
