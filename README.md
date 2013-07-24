@@ -59,3 +59,9 @@ This plugin was implemented primarily through reverse engineering. The following
 * [https://github.com/0xced/CLITool-InfoPlist](https://github.com/0xced/CLITool-InfoPlist)
 
 This plugin is still experimental, so use it at your own risk.
+
+
+## License
+
+This project is copyrighted by [SAP AG](http://www.sap.com/) and made available under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html). Please also confer to the text files "LICENSE" and "NOTICE" included with the project sources.
+
